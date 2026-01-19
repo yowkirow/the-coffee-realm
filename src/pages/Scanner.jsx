@@ -11,11 +11,15 @@ const Scanner = () => {
     const [status, setStatus] = useState('idle') // idle, scanning, processing, success, error
     const navigate = useNavigate()
     const scannerRef = useRef(null)
+    const isProcessing = useRef(false) // Use ref to avoid stale closure in callback
 
     const onScanSuccess = async (decodedText, decodedResult) => {
-        if (status === 'processing' || status === 'success') return
+        if (isProcessing.current) return
 
+        console.log("QR Code Detected:", decodedText) // Debug log
+        isProcessing.current = true
         setStatus('processing')
+
         try {
             const userId = decodedText
 
@@ -32,13 +36,17 @@ const Scanner = () => {
             setTimeout(() => {
                 setStatus('idle')
                 setScanResult(null)
+                isProcessing.current = false // Reset lock
             }, 3000)
 
         } catch (error) {
-            console.error(error)
+            console.error("Scan Logic Error:", error)
             setScanResult("Failed to add points.")
             setStatus('error')
-            setTimeout(() => setStatus('idle'), 3000)
+            setTimeout(() => {
+                setStatus('idle')
+                isProcessing.current = false
+            }, 3000)
         }
     }
 
@@ -51,7 +59,7 @@ const Scanner = () => {
 
         const config = {
             fps: 10,
-            qrbox: { width: 250, height: 250 },
+            // qrbox: { width: 250, height: 250 }, // Removed to allow full-screen scanning
             aspectRatio: 1,
             videoConstraints: {
                 facingMode: { exact: "environment" }
