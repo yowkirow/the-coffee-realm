@@ -1,24 +1,33 @@
 import React, { useEffect, useState, useRef } from 'react'
-import { Html5QrcodeScanner } from 'html5-qrcode'
+import { Html5Qrcode } from 'html5-qrcode'
 import { supabase } from '../lib/supabaseClient'
 import { useNavigate } from 'react-router-dom'
 import Button from '../components/ui/Button'
 import Card from '../components/ui/Card'
-import { ArrowLeft, CheckCircle, XCircle } from 'lucide-react'
+import { ArrowLeft, CheckCircle, XCircle, Loader2 } from 'lucide-react'
 
 const Scanner = () => {
     const [scanResult, setScanResult] = useState(null)
-    const [status, setStatus] = useState('idle') // idle, scanning, processing, success, error
+    const [status, setStatus] = useState('idle') // idle, starting, scanning, processing, success, error
     const navigate = useNavigate()
     const scannerRef = useRef(null)
-    const isProcessing = useRef(false) // Use ref to avoid stale closure in callback
+    const isProcessing = useRef(false)
 
     const onScanSuccess = async (decodedText, decodedResult) => {
         if (isProcessing.current) return
 
-        console.log("QR Code Detected:", decodedText) // Debug log
+        console.log("QR Code Detected:", decodedText)
         isProcessing.current = true
         setStatus('processing')
+
+        // Pause scanning
+        if (scannerRef.current) {
+            try {
+                await scannerRef.current.pause(true)
+            } catch (e) {
+                console.warn("Failed to pause scanner", e)
+            }
+        }
 
         try {
             const userId = decodedText
@@ -33,91 +42,79 @@ const Scanner = () => {
             setScanResult(`Added stamp to user!`)
             setStatus('success')
 
-            setTimeout(() => {
-                setStatus('idle')
+            setTimeout(async () => {
+                setStatus('scanning')
                 setScanResult(null)
-                isProcessing.current = false // Reset lock
+                isProcessing.current = false
+                if (scannerRef.current) {
+                    try {
+                        await scannerRef.current.resume()
+                    } catch (e) {
+                        console.warn("Resume failed", e)
+                    }
+                }
             }, 3000)
 
         } catch (error) {
             console.error("Scan Logic Error:", error)
             setScanResult("Failed to add points.")
             setStatus('error')
-            setTimeout(() => {
-                setStatus('idle')
+            setTimeout(async () => {
+                setStatus('scanning')
                 isProcessing.current = false
+                if (scannerRef.current) {
+                    try {
+                        await scannerRef.current.resume()
+                    } catch (e) { }
+                }
             }, 3000)
         }
     }
 
     useEffect(() => {
         // Safe check for element
-        if (!document.getElementById('reader')) {
+        const elementId = "reader"
+        if (!document.getElementById(elementId)) {
             console.warn("Scanner element 'reader' not found")
             return
         }
 
-        const config = {
-            fps: 10,
-            // qrbox: { width: 250, height: 250 }, // Removed to allow full-screen scanning
-            aspectRatio: 1,
-            videoConstraints: {
-                facingMode: { exact: "environment" }
-            }
-        }
-
-        const failureCallback = (errorMessage) => {
-            // Filter out common noise errors to keep UI/Console clean
-            const noise = [
-                "No MultiFormat Readers",
-                "NotFoundException",
-                "No barcode or QR code detected"
-            ]
-            if (!noise.some(n => errorMessage?.includes(n))) {
-                console.warn(`Scan error: ${errorMessage}`)
-            }
-        }
-
-        const initScanner = async () => {
+        const startScanner = async () => {
+            setStatus('starting')
             try {
-                // Initialize scanner instance
-                scannerRef.current = new Html5QrcodeScanner("reader", config, false)
+                // Use Core Class instead of Scanner Widget
+                const html5QrCode = new Html5Qrcode(elementId)
+                scannerRef.current = html5QrCode
 
-                // Start rendering
-                scannerRef.current.render(onScanSuccess, failureCallback)
-            } catch (e) {
-                console.warn("Back camera constraint failed, retrying without exact...", e)
-
-                // Fallback: Remove strict facial requirement
-                try {
-                    // Cleanup if partially initialized
-                    if (scannerRef.current) {
-                        await scannerRef.current.clear().catch(() => { })
-                    }
-
-                    // Modify config for fallback
-                    delete config.videoConstraints.facingMode.exact
-                    config.videoConstraints.facingMode = "environment"
-
-                    scannerRef.current = new Html5QrcodeScanner("reader", config, false)
-                    scannerRef.current.render(onScanSuccess, failureCallback)
-                } catch (retryError) {
-                    console.error("Scanner Retry Failed:", retryError)
-                    setScanResult('Camera failed to start.')
-                    setStatus('error')
+                const config = {
+                    fps: 10,
+                    aspectRatio: 1.0,
+                    qrbox: { width: 250, height: 250 } // Restore box for focus
                 }
+
+                // Start immediately
+                await html5QrCode.start(
+                    { facingMode: "environment" },
+                    config,
+                    onScanSuccess,
+                    (errorMessage) => {
+                        // Ignore noise
+                    }
+                )
+
+                setStatus('scanning')
+            } catch (err) {
+                console.error("Error starting scanner:", err)
+                setScanResult('Could not start camera. Check permissions.')
+                setStatus('error')
             }
         }
 
-        initScanner()
+        startScanner()
 
         return () => {
             if (scannerRef.current) {
-                try {
-                    scannerRef.current.clear().catch(e => console.warn("Clear failed", e))
-                } catch (e) {
-                    console.error("Failed to clear scanner", e)
-                }
+                scannerRef.current.stop().catch(err => console.error("Failed to stop scanner", err))
             }
         }
     }, [])
@@ -131,21 +128,32 @@ const Scanner = () => {
                 <h1 className="text-2xl font-bold">Barista Scanner</h1>
             </div>
 
-            <Card className="min-h-[400px] flex flex-col items-center justify-center p-4 bg-black/5">
-                {status === 'success' ? (
-                    <div className="flex flex-col items-center text-primary animate-fade-in">
-                        <CheckCircle className="w-20 h-20 mb-4" />
-                        <h2 className="text-2xl font-bold">Success!</h2>
-                        <p>{scanResult}</p>
+            <Card className="min-h-[400px] flex flex-col items-center justify-center p-4 bg-black/5 overflow-hidden relative">
+                {/* Scanner Viewport */}
+                <div id="reader" className={`w-full h-full rounded-lg overflow-hidden ${status === 'success' || status === 'error' ? 'opacity-0 absolute' : 'opacity-100'}`} />
+
+                {/* Overlays */}
+                {status === 'starting' && (
+                    <div className="absolute inset-0 flex flex-col items-center justify-center bg-gray-50/90 z-10">
+                        <Loader2 className="w-10 h-10 animate-spin text-emerald-600 mb-4" />
+                        <p className="text-sm font-medium text-emerald-800">Starting Camera...</p>
                     </div>
-                ) : status === 'error' ? (
-                    <div className="flex flex-col items-center text-red-500 animate-fade-in">
-                        <XCircle className="w-20 h-20 mb-4" />
-                        <h2 className="text-2xl font-bold">Error</h2>
-                        <p>{scanResult}</p>
+                )}
+
+                {status === 'success' && (
+                    <div className="absolute inset-0 flex flex-col items-center justify-center bg-white z-20 animate-fade-in">
+                        <CheckCircle className="w-20 h-20 mb-4 text-emerald-500" />
+                        <h2 className="text-2xl font-bold text-emerald-800">Success!</h2>
+                        <p className="text-emerald-600">{scanResult}</p>
                     </div>
-                ) : (
-                    <div id="reader" className="w-full"></div>
+                )}
+
+                {status === 'error' && (
+                    <div className="absolute inset-0 flex flex-col items-center justify-center bg-white z-20 animate-fade-in">
+                        <XCircle className="w-20 h-20 mb-4 text-red-500" />
+                        <h2 className="text-2xl font-bold text-red-800">Error</h2>
+                        <p className="text-red-600">{scanResult}</p>
+                    </div>
                 )}
             </Card>
 
