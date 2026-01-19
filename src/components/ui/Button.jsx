@@ -3,9 +3,9 @@ import { cn } from '../../lib/utils'
 
 const Button = ({ children, className, variant = 'primary', ...props }) => {
     const variants = {
-        primary: 'bg-primary text-white hover:bg-primary-hover shadow-lg shadow-primary/30 hover:shadow-primary/40 border border-transparent',
-        outline: 'bg-white/50 backdrop-blur-sm border-2 border-primary text-primary hover:bg-primary hover:text-white',
-        ghost: 'bg-transparent text-text-muted hover:text-text hover:bg-black/5'
+        primary: 'bg-[#15803d] text-white hover:bg-[#166534] shadow-lg shadow-green-900/20 border border-transparent',
+        outline: 'bg-white/80 backdrop-blur-sm border-2 border-[#15803d] text-[#15803d] hover:bg-[#15803d] hover:text-white',
+        ghost: 'bg-transparent text-gray-600 hover:text-gray-900 hover:bg-black/5'
     }
 
     return (
