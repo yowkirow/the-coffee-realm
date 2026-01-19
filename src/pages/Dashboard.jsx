@@ -1,5 +1,5 @@
 import React from 'react'
-import { LogOut, QrCode } from 'lucide-react'
+import { LogOut, QrCode, Settings } from 'lucide-react'
 import { QRCodeSVG } from 'qrcode.react'
 import Button from '../components/ui/Button'
 import Card from '../components/ui/Card'
@@ -58,10 +58,21 @@ const Dashboard = () => {
                 <p className="text-xs text-gray-400 uppercase tracking-wider font-bold">Show this to barista</p>
             </Card>
 
-            <div className="mt-8">
+            <div className="mt-8 space-y-3">
                 <Button className="w-full h-14 text-lg shadow-xl shadow-emerald-900/20 bg-emerald-700 hover:bg-emerald-800" onClick={() => navigate('/menu')}>
                     Browse Menu & Order
                 </Button>
+
+                {profile?.role === 'admin' && (
+                    <Button
+                        className="w-full h-12 text-base border-2 border-emerald-700 text-emerald-800 hover:bg-emerald-50"
+                        variant="outline"
+                        onClick={() => navigate('/admin')}
+                    >
+                        <Settings className="w-5 h-5 mr-2" />
+                        Admin Settings
+                    </Button>
+                )}
             </div>
         </div>
     )
