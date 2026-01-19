@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { LogOut, QrCode, Settings } from 'lucide-react'
 import { QRCodeSVG } from 'qrcode.react'
 import Button from '../components/ui/Button'
