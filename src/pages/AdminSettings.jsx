@@ -5,7 +5,7 @@ import Card from '../components/ui/Card'
 import Input from '../components/ui/Input'
 import { useAuth } from '../context/AuthContext'
 import { useNavigate } from 'react-router-dom'
-import { Save, ArrowLeft, ShieldAlert } from 'lucide-react'
+import { Save, ArrowLeft, ShieldAlert, Gift, Trash2, Plus } from 'lucide-react'
 
 const AdminSettings = () => {
     const { profile } = useAuth()
@@ -16,6 +16,8 @@ const AdminSettings = () => {
         stamps_required: 8,
         reward_name: 'Free Coffee'
     })
+    const [milestones, setMilestones] = useState([])
+    const [newMilestone, setNewMilestone] = useState({ stamps: '', name: '' })
     const [message, setMessage] = useState(null)
 
     // Verify Admin Access
@@ -27,6 +29,7 @@ const AdminSettings = () => {
 
     useEffect(() => {
         fetchSettings()
+        fetchMilestones()
     }, [])
 
     const fetchSettings = async () => {
@@ -42,6 +45,39 @@ const AdminSettings = () => {
             console.error('Error fetching settings:', error)
         } finally {
             setLoading(false)
+        }
+    }
+
+    const fetchMilestones = async () => {
+        const { data } = await supabase.from('loyalty_milestones').select('*').order('stamps_required', { ascending: true })
+        if (data) setMilestones(data)
+    }
+
+    const handleAddMilestone = async () => {
+        if (!newMilestone.stamps || !newMilestone.name) return
+
+        try {
+            const { error } = await supabase.from('loyalty_milestones').insert({
+                stamps_required: parseInt(newMilestone.stamps),
+                reward_name: newMilestone.name
+            })
+            if (error) throw error
+
+            setNewMilestone({ stamps: '', name: '' })
+            fetchMilestones()
+        } catch (error) {
+            console.error('Error adding milestone:', error)
+            alert('Failed to add milestone')
+        }
+    }
+
+    const handleDeleteMilestone = async (id) => {
+        try {
+            const { error } = await supabase.from('loyalty_milestones').delete().eq('id', id)
+            if (error) throw error
+            fetchMilestones()
+        } catch (error) {
+            console.error('Error deleting milestone:', error)
         }
     }
 
@@ -130,6 +166,60 @@ const AdminSettings = () => {
                         )}
                     </Button>
                 </form>
+            </Card>
+
+            {/* Milestones Section */}
+            <Card className="bg-white border-emerald-100 shadow-lg mt-8">
+                <div className="flex items-center gap-2 mb-6">
+                    <Gift className="w-5 h-5 text-emerald-700" />
+                    <h2 className="text-xl font-bold">Intermediate Rewards</h2>
+                </div>
+
+                <div className="space-y-4">
+                    {milestones.map((m) => (
+                        <div key={m.id} className="flex items-center justify-between p-3 bg-emerald-50 rounded-lg border border-emerald-100">
+                            <div>
+                                <span className="font-bold text-emerald-800">Stamp {m.stamps_required}:</span>
+                                <span className="ml-2 text-gray-700">{m.reward_name}</span>
+                            </div>
+                            <button
+                                onClick={() => handleDeleteMilestone(m.id)}
+                                className="text-red-400 hover:text-red-600 p-2"
+                            >
+                                <Trash2 className="w-4 h-4" />
+                            </button>
+                        </div>
+                    ))}
+
+                    {milestones.length === 0 && (
+                        <p className="text-gray-400 text-sm italic">No intermediate rewards set.</p>
+                    )}
+
+                    {/* Add New Milestone */}
+                    <div className="flex gap-2 mt-4 pt-4 border-t border-gray-100">
+                        <Input
+                            type="number"
+                            placeholder="Stamp #"
+                            className="w-24 bg-gray-50"
+                            value={newMilestone.stamps}
+                            onChange={(e) => setNewMilestone({ ...newMilestone, stamps: e.target.value })}
+                        />
+                        <Input
+                            type="text"
+                            placeholder="Reward Name (e.g. Free Cookie)"
+                            className="flex-1 bg-gray-50"
+                            value={newMilestone.name}
+                            onChange={(e) => setNewMilestone({ ...newMilestone, name: e.target.value })}
+                        />
+                        <Button
+                            type="button"
+                            onClick={handleAddMilestone}
+                            className="bg-emerald-600 hover:bg-emerald-700 w-auto px-4"
+                        >
+                            <Plus className="w-4 h-4" />
+                        </Button>
+                    </div>
+                </div>
             </Card>
         </div>
     )

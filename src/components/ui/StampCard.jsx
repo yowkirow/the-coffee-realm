@@ -6,6 +6,7 @@ import { supabase } from '../../lib/supabaseClient'
 const StampCard = ({ stamps = 0 }) => {
     const [maxStamps, setMaxStamps] = useState(8)
     const [rewardName, setRewardName] = useState('Free Coffee')
+    const [milestones, setMilestones] = useState([])
 
     useEffect(() => {
         const fetchSettings = async () => {
@@ -14,6 +15,9 @@ const StampCard = ({ stamps = 0 }) => {
                 setMaxStamps(data.stamps_required)
                 setRewardName(data.reward_name)
             }
+
+            const { data: mData } = await supabase.from('loyalty_milestones').select('*')
+            if (mData) setMilestones(mData)
         }
         fetchSettings()
     }, [])
@@ -42,26 +46,40 @@ const StampCard = ({ stamps = 0 }) => {
             </div>
 
             {/* Grid */}
-            <div className="grid grid-cols-4 gap-3">
-                {Array.from({ length: maxStamps }).map((_, i) => (
-                    <div
-                        key={i}
-                        className={cn(
-                            "aspect-square rounded-xl flex items-center justify-center transition-all duration-300",
-                            i < stamps
-                                ? "bg-white shadow-md text-emerald-600 scale-100 ring-2 ring-emerald-50"
-                                : "bg-emerald-900/5 text-emerald-900/20 scale-95" // Darker placeholder for visibility
-                        )}
-                    >
-                        <Coffee
+            <div className="grid grid-cols-4 gap-3 relative">
+                {Array.from({ length: maxStamps }).map((_, i) => {
+                    const milestone = milestones.find(m => m.stamps_required === i + 1)
+                    return (
+                        <div
+                            key={i}
                             className={cn(
-                                "w-1/2 h-1/2",
-                                i < stamps && "fill-current"
+                                "aspect-square rounded-xl flex items-center justify-center transition-all duration-300 relative group",
+                                i < stamps
+                                    ? "bg-white shadow-md text-emerald-600 scale-100 ring-2 ring-emerald-50"
+                                    : "bg-emerald-900/5 text-emerald-900/20 scale-95"
                             )}
-                            strokeWidth={2.5}
-                        />
-                    </div>
-                ))}
+                        >
+                            <Coffee
+                                className={cn(
+                                    "w-1/2 h-1/2",
+                                    i < stamps && "fill-current"
+                                )}
+                                strokeWidth={2.5}
+                            />
+
+                            {/* Milestone Marker */}
+                            {milestone && (
+                                <div className="absolute -top-2 -right-2 bg-yellow-400 text-yellow-900 p-1 rounded-full shadow-sm z-10 animate-pulse group-hover:animate-none">
+                                    <Gift className="w-3 h-3" />
+                                    {/* Tooltip */}
+                                    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-[10px] rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
+                                        {milestone.reward_name}
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    )
+                })}
             </div>
 
             <div className="mt-6 bg-emerald-600 text-white rounded-xl p-4 flex items-center justify-between shadow-lg shadow-emerald-600/20 ring-1 ring-emerald-500/50">
