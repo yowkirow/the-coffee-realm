@@ -1,54 +1,75 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react'
+import { supabase } from '../lib/supabaseClient'
 
-const AuthContext = createContext();
+const AuthContext = createContext({})
 
-export const useAuth = () => useContext(AuthContext);
+export const useAuth = () => useContext(AuthContext)
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState(null)
+  const [profile, setProfile] = useState(null)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    // Check local storage for existing session
-    const storedUser = localStorage.getItem('coffee_realm_user');
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
+    // Check active sessions and sets the user
+    const getSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession()
+      setUser(session?.user ?? null)
+      if (session?.user) {
+        fetchProfile(session.user.id)
+      } else {
+        setLoading(false)
+      }
     }
-    setLoading(false);
-  }, []);
 
-  const login = (name, role = 'customer') => {
-    // Simulate login - generate a random ID if not exists
-    const newUser = {
-      id: crypto.randomUUID(),
-      name,
-      role, // 'customer' or 'barista'
-      points: role === 'customer' ? 0 : undefined,
-      joinedDate: new Date().toISOString(),
-    };
-    
-    // For demo purposes, we just persist this new user
-    // In a real app, we'd fetch from API
-    setUser(newUser);
-    localStorage.setItem('coffee_realm_user', JSON.stringify(newUser));
-  };
+    getSession()
 
-  const logout = () => {
-    setUser(null);
-    localStorage.removeItem('coffee_realm_user');
-  };
+    // Listen for changes on auth state (logged in, signed out, etc.)
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      setUser(session?.user ?? null)
+      if (session?.user) {
+        await fetchProfile(session.user.id)
+      } else {
+        setProfile(null)
+      }
+      setLoading(false)
+    })
 
-  const addPoint = () => {
-    if (user && user.role === 'customer') {
-      const updatedUser = { ...user, points: (user.points || 0) + 1 };
-      setUser(updatedUser);
-      localStorage.setItem('coffee_realm_user', JSON.stringify(updatedUser));
+    return () => subscription.unsubscribe()
+  }, [])
+
+  const fetchProfile = async (userId) => {
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', userId)
+        .single()
+
+      if (error) {
+        console.warn('Error fetching profile:', error)
+      } else {
+        setProfile(data)
+      }
+    } catch (error) {
+      console.error('Error:', error)
+    } finally {
+      setLoading(false)
     }
-  };
+  }
+
+  const value = {
+    signUp: (data) => supabase.auth.signUp(data),
+    signIn: (data) => supabase.auth.signInWithPassword(data),
+    signOut: () => supabase.auth.signOut(),
+    user,
+    profile,
+    loading
+  }
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, addPoint, loading }}>
-      {children}
+    <AuthContext.Provider value={value}>
+      {!loading && children}
     </AuthContext.Provider>
-  );
-};
+  )
+}
