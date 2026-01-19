@@ -6,6 +6,8 @@ import Landing from './pages/Landing'
 import Login from './pages/Login'
 import SignUp from './pages/SignUp'
 import Dashboard from './pages/Dashboard'
+import Menu from './pages/Menu'
+
 
 function App() {
   return (
@@ -21,6 +23,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/menu"
+            element={
+              <ProtectedRoute>
+                <Menu />
               </ProtectedRoute>
             }
           />

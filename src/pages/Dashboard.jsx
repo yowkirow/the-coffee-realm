@@ -46,6 +46,12 @@ const Dashboard = () => {
                 </div>
                 <p className="text-xs text-text-muted uppercase tracking-wider font-bold">Show this to barista</p>
             </Card>
+
+            <div className="mt-8">
+                <Button className="w-full h-14 text-lg shadow-xl shadow-primary/10" onClick={() => navigate('/menu')}>
+                    Browse Menu & Order
+                </Button>
+            </div>
         </div>
     )
 }

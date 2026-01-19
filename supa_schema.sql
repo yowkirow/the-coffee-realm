@@ -60,3 +60,14 @@ $$ language plpgsql security definer;
 create trigger on_auth_user_created
   after insert on auth.users
   for each row execute procedure public.handle_new_user();
+
+-- SEED DATA
+insert into products (name, description, price, category, image_url) values
+  ('Signature Espresso', 'Rich and bold single-origin espresso shot.', 3.50, 'coffee', 'https://images.unsplash.com/photo-1510591509098-f4fdc6d0ff04?auto=format&fit=crop&q=80&w=300&h=300'),
+  ('Classic Americano', 'Espresso with hot water for a smooth taste.', 4.00, 'coffee', 'https://images.unsplash.com/photo-1551024601-563778a8f4f2?auto=format&fit=crop&q=80&w=300&h=300'),
+  ('Vanilla Latte', 'Espresso with steamed milk and vanilla syrup.', 5.50, 'coffee', 'https://images.unsplash.com/photo-1570968992193-d6ea0696f07e?auto=format&fit=crop&q=80&w=300&h=300'),
+  ('Caramel Macchiato', 'Espresso marked with caramel and steamed milk.', 5.75, 'coffee', 'https://images.unsplash.com/photo-1485808191679-5f8c7c860695?auto=format&fit=crop&q=80&w=300&h=300'),
+  ('Cold Brew', 'Slow-steeped cold coffee, smooth and refreshing.', 4.50, 'coffee', 'https://images.unsplash.com/photo-1517701604599-bb29b5c73312?auto=format&fit=crop&q=80&w=300&h=300'),
+  ('Matcha Latte', 'Premium grade matcha green tea with steamed milk.', 6.00, 'tea', 'https://images.unsplash.com/photo-1515825838458-f2a94b20105a?auto=format&fit=crop&q=80&w=300&h=300'),
+  ('Croissant', 'Buttery, flaky, and freshly baked.', 3.75, 'pastry', 'https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&q=80&w=300&h=300'),
+  ('Blueberry Muffin', 'Soft muffin bursting with fresh blueberries.', 4.00, 'pastry', 'https://images.unsplash.com/photo-1607958996333-41aef7caefaa?auto=format&fit=crop&q=80&w=300&h=300');
