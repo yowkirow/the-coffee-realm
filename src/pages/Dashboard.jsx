@@ -32,33 +32,34 @@ const Dashboard = () => {
             </header>
 
             <div className="mb-8">
-                <Card className="bg-primary border-none shadow-xl shadow-primary/20 p-1">
+                <Card className="bg-gradient-to-br from-emerald-600 to-emerald-800 border-none shadow-xl shadow-emerald-900/20 p-1">
                     <StampCard stamps={stamps} />
                 </Card>
             </div>
 
 
-            <Card className="flex flex-col items-center justify-center text-center p-8 border-2 border-dashed border-primary/20 bg-white">
+            <Card className="flex flex-col items-center justify-center text-center p-8 border-2 border-dashed border-emerald-200 bg-white shadow-sm">
                 <div className="w-48 h-48 mb-4">
                     {profile?.id ? (
-                        <QRCodeSVG
-                            value={profile.id}
-                            size={192}
-                            fgColor="#15803d" // primary color
-                            className="w-full h-full"
-                        />
+                        // <QRCodeSVG
+                        //     value={profile.id}
+                        //     size={192}
+                        //     fgColor="#047857" // emerald-700
+                        //     className="w-full h-full"
+                        // />
+                        <div className="w-full h-full bg-emerald-100 flex items-center justify-center text-emerald-800 font-bold">QR CODE HERE</div>
                     ) : (
-                        <QrCode className="w-full h-full text-text" />
+                        <QrCode className="w-full h-full text-gray-300" />
                     )}
                 </div>
-                <div className="bg-surface-hover px-4 py-2 rounded-lg mb-2">
-                    <code className="text-sm font-mono text-text-muted">{profile?.id ? `ID: ${profile.id.slice(0, 8)}...` : 'Loading...'}</code>
+                <div className="bg-gray-50 px-4 py-2 rounded-lg mb-2 border border-gray-100">
+                    <code className="text-sm font-mono text-gray-500">{profile?.id ? `ID: ${profile.id.slice(0, 8)}...` : 'Loading...'}</code>
                 </div>
-                <p className="text-xs text-text-muted uppercase tracking-wider font-bold">Show this to barista</p>
+                <p className="text-xs text-gray-400 uppercase tracking-wider font-bold">Show this to barista</p>
             </Card>
 
             <div className="mt-8">
-                <Button className="w-full h-14 text-lg shadow-xl shadow-primary/10" onClick={() => navigate('/menu')}>
+                <Button className="w-full h-14 text-lg shadow-xl shadow-emerald-900/20 bg-emerald-700 hover:bg-emerald-800" onClick={() => navigate('/menu')}>
                     Browse Menu & Order
                 </Button>
             </div>

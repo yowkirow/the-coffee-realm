@@ -63,8 +63,8 @@ const Menu = () => {
                         className={`
                     px-6 py-2 rounded-full font-medium text-sm whitespace-nowrap transition-all
                     ${category === cat.id
-                                ? 'bg-primary text-white shadow-lg shadow-primary/20'
-                                : 'bg-white text-text-muted hover:bg-surface-hover'
+                                ? 'bg-emerald-700 text-white shadow-lg shadow-emerald-900/20'
+                                : 'bg-white text-gray-500 hover:bg-gray-50'
                             }
                 `}
                     >

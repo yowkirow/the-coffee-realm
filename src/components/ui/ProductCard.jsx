@@ -23,7 +23,7 @@ const ProductCard = ({ product }) => {
                         <h3 className="font-bold text-text text-lg leading-tight">{product.name}</h3>
                         <p className="text-xs text-text-muted capitalize">{product.category}</p>
                     </div>
-                    <span className="font-display font-bold text-primary text-lg">
+                    <span className="font-display font-bold text-emerald-700 text-lg">
                         ${product.price ? product.price.toFixed(2) : '0.00'}
                     </span>
                 </div>
