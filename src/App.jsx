@@ -7,6 +7,8 @@ import Login from './pages/Login'
 import SignUp from './pages/SignUp'
 import Dashboard from './pages/Dashboard'
 import Menu from './pages/Menu'
+import Scanner from './pages/Scanner'
+
 
 
 function App() {
@@ -31,6 +33,15 @@ function App() {
             element={
               <ProtectedRoute>
                 <Menu />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/scanner"
+            element={
+              <ProtectedRoute>
+                <Scanner />
               </ProtectedRoute>
             }
           />

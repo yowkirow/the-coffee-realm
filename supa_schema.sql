@@ -71,3 +71,17 @@ insert into products (name, description, price, category, image_url) values
   ('Matcha Latte', 'Premium grade matcha green tea with steamed milk.', 6.00, 'tea', 'https://images.unsplash.com/photo-1515825838458-f2a94b20105a?auto=format&fit=crop&q=80&w=300&h=300'),
   ('Croissant', 'Buttery, flaky, and freshly baked.', 3.75, 'pastry', 'https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&q=80&w=300&h=300'),
   ('Blueberry Muffin', 'Soft muffin bursting with fresh blueberries.', 4.00, 'pastry', 'https://images.unsplash.com/photo-1607958996333-41aef7caefaa?auto=format&fit=crop&q=80&w=300&h=300');
+
+-- RPC FUNCTION: increment_points
+-- Allows Baristas to add points to a user (via Scanner)
+create or replace function increment_points(target_user_id uuid, points_to_add int)
+returns void
+language plpgsql
+security definer
+as $$
+begin
+  update public.profiles
+  set points = points + points_to_add
+  where id = target_user_id;
+end;
+$$;

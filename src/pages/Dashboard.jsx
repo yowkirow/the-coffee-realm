@@ -36,13 +36,23 @@ const Dashboard = () => {
                 </Card>
             </div>
 
+            import {QRCodeSVG} from 'qrcode.react'
+            // ...
             <Card className="flex flex-col items-center justify-center text-center p-8 border-2 border-dashed border-primary/20 bg-white">
                 <div className="w-48 h-48 mb-4">
-                    {/* QR Code will go here */}
-                    <QrCode className="w-full h-full text-text" />
+                    {profile?.id ? (
+                        <QRCodeSVG
+                            value={profile.id}
+                            size={192}
+                            fgColor="#15803d" // primary color
+                            className="w-full h-full"
+                        />
+                    ) : (
+                        <QrCode className="w-full h-full text-text" />
+                    )}
                 </div>
                 <div className="bg-surface-hover px-4 py-2 rounded-lg mb-2">
-                    <code className="text-sm font-mono text-text-muted">sample@coffelover.com</code>
+                    <code className="text-sm font-mono text-text-muted">{profile?.id ? `ID: ${profile.id.slice(0, 8)}...` : 'Loading...'}</code>
                 </div>
                 <p className="text-xs text-text-muted uppercase tracking-wider font-bold">Show this to barista</p>
             </Card>
