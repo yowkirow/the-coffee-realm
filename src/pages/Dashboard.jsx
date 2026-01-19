@@ -74,6 +74,15 @@ const Dashboard = () => {
                     </Button>
                 )}
             </div>
+
+            {/* Debug Info - Remove later */}
+            <div className="mt-8 text-center opacity-50">
+                <p className="text-[10px] text-gray-400 font-mono">
+                    Current Role: <span className="font-bold">{profile?.role || 'null'}</span>
+                    <br />
+                    ID: {profile?.id?.slice(0, 6)}...
+                </p>
+            </div>
         </div>
     )
 }
