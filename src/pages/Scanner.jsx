@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react' // Added useRef
+import React, { useEffect, useState, useRef } from 'react'
 import { Html5QrcodeScanner } from 'html5-qrcode'
 import { supabase } from '../lib/supabaseClient'
 import { useNavigate } from 'react-router-dom'
@@ -12,17 +12,13 @@ const Scanner = () => {
     const navigate = useNavigate()
     const scannerRef = useRef(null)
 
-    // Moved onScanSuccess UP so it's accessible (or use var/function hoisting)
-    // Actually, in useEffect we can just call it if it's defined in component scope.
-
-    // Define the success handler FIRST or ensure it's stable
     const onScanSuccess = async (decodedText, decodedResult) => {
         if (status === 'processing' || status === 'success') return
 
         setStatus('processing')
         try {
             const userId = decodedText
-            // ... logic ...
+
             const { data, error } = await supabase.rpc('increment_points', {
                 target_user_id: userId,
                 points_to_add: 50
@@ -56,36 +52,67 @@ const Scanner = () => {
         const config = {
             fps: 10,
             qrbox: { width: 250, height: 250 },
-            aspectRatio: 1
+            aspectRatio: 1,
+            videoConstraints: {
+                facingMode: { exact: "environment" }
+            }
         }
 
-        // Initialize
-        try {
-            scannerRef.current = new Html5QrcodeScanner("reader", config, false)
-
-            scannerRef.current.render(onScanSuccess, (err) => {
-                // Ignore errors to prevent console spam
-            })
-        } catch (e) {
-            console.error("Scanner Initialization Failed:", e)
-            setScanResult('Camera failed to start.')
-            setStatus('error')
+        const failureCallback = (errorMessage) => {
+            // Filter out common noise errors to keep UI/Console clean
+            const noise = [
+                "No MultiFormat Readers",
+                "NotFoundException",
+                "No barcode or QR code detected"
+            ]
+            if (!noise.some(n => errorMessage?.includes(n))) {
+                console.warn(`Scan error: ${errorMessage}`)
+            }
         }
+
+        const initScanner = async () => {
+            try {
+                // Initialize scanner instance
+                scannerRef.current = new Html5QrcodeScanner("reader", config, false)
+
+                // Start rendering
+                scannerRef.current.render(onScanSuccess, failureCallback)
+            } catch (e) {
+                console.warn("Back camera constraint failed, retrying without exact...", e)
+
+                // Fallback: Remove strict facial requirement
+                try {
+                    // Cleanup if partially initialized
+                    if (scannerRef.current) {
+                        await scannerRef.current.clear().catch(() => { })
+                    }
+
+                    // Modify config for fallback
+                    delete config.videoConstraints.facingMode.exact
+                    config.videoConstraints.facingMode = "environment"
+
+                    scannerRef.current = new Html5QrcodeScanner("reader", config, false)
+                    scannerRef.current.render(onScanSuccess, failureCallback)
+                } catch (retryError) {
+                    console.error("Scanner Retry Failed:", retryError)
+                    setScanResult('Camera failed to start.')
+                    setStatus('error')
+                }
+            }
+        }
+
+        initScanner()
 
         return () => {
             if (scannerRef.current) {
                 try {
-                    scannerRef.current.clear()
+                    scannerRef.current.clear().catch(e => console.warn("Clear failed", e))
                 } catch (e) {
                     console.error("Failed to clear scanner", e)
                 }
             }
         }
-    }, []) // Dependency array empty is fine if logic is stable
-
-    const onScanFailure = (error) => {
-        // Handle scan failure, usually better to ignore frame errors
-    }
+    }, [])
 
     return (
         <div className="container mx-auto px-4 py-8 max-w-md animate-fade-in text-center">
