@@ -11,6 +11,13 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    // Graceful handling if supabase is not initialized
+    if (!supabase) {
+      console.error('Supabase client is not initialized. Check environment variables.')
+      setLoading(false)
+      return
+    }
+
     // Check active sessions and sets the user
     const getSession = async () => {
       const { data: { session } } = await supabase.auth.getSession()
