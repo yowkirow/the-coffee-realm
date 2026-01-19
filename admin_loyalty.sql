@@ -22,8 +22,10 @@ CREATE POLICY "Public read access" ON public.loyalty_settings
 -- Policy 2: Only Admins can UPDATE
 -- Note: This relies on the 'admin' role being set in public.profiles/auth.users metadata
 -- For simplicity in this app, we will check public.profiles
+-- Policy 2: Only Admins can UPDATE/INSERT/DELETE
+-- Note: we use FOR ALL to allow upsert (which needs insert permissions)
 CREATE POLICY "Admins can update" ON public.loyalty_settings
-    FOR UPDATE USING (
+    FOR ALL USING (
         EXISTS (
             SELECT 1 FROM public.profiles
             WHERE id = auth.uid() AND role = 'admin'
@@ -32,4 +34,4 @@ CREATE POLICY "Admins can update" ON public.loyalty_settings
 
 -- Grant permissions
 GRANT SELECT ON public.loyalty_settings TO anon, authenticated;
-GRANT UPDATE ON public.loyalty_settings TO authenticated;
+GRANT ALL ON public.loyalty_settings TO authenticated;

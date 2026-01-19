@@ -4,6 +4,7 @@ import { QRCodeSVG } from 'qrcode.react'
 import Button from '../components/ui/Button'
 import Card from '../components/ui/Card'
 import StampCard from '../components/ui/StampCard'
+import FancyQRCode from '../components/ui/FancyQRCode'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 
@@ -41,13 +42,10 @@ const Dashboard = () => {
             <Card className="flex flex-col items-center justify-center text-center p-8 border-2 border-dashed border-emerald-200 bg-white shadow-sm">
                 <div className="w-48 h-48 mb-4">
                     {profile?.id ? (
-                        // <QRCodeSVG
-                        //     value={profile.id}
-                        //     size={192}
-                        //     fgColor="#047857" // emerald-700
-                        //     className="w-full h-full"
-                        // />
-                        <div className="w-full h-full bg-emerald-100 flex items-center justify-center text-emerald-800 font-bold">QR CODE HERE</div>
+                        <FancyQRCode
+                            value={profile.id}
+                            size={192}
+                        />
                     ) : (
                         <QrCode className="w-full h-full text-gray-300" />
                     )}
