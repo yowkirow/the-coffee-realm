@@ -1,26 +1,18 @@
-import { cn } from "@/lib/utils"
+import React from 'react'
+import { cn } from '../../lib/utils'
 
-const Card = ({ className, ...props }) => (
-    <div
-        className={cn("rounded-lg border border-coffee-200 bg-white text-coffee-950 shadow-sm", className)}
-        {...props}
-    />
-)
+const Card = ({ children, className, ...props }) => {
+    return (
+        <div
+            className={cn(
+                "bg-surface shadow-lg rounded-3xl p-6 border border-border/50",
+                className
+            )}
+            {...props}
+        >
+            {children}
+        </div>
+    )
+}
 
-const CardHeader = ({ className, ...props }) => (
-    <div className={cn("flex flex-col space-y-1.5 p-6", className)} {...props} />
-)
-
-const CardTitle = ({ className, ...props }) => (
-    <h3 className={cn("text-2xl font-semibold leading-none tracking-tight", className)} {...props} />
-)
-
-const CardContent = ({ className, ...props }) => (
-    <div className={cn("p-6 pt-0", className)} {...props} />
-)
-
-const CardFooter = ({ className, ...props }) => (
-    <div className={cn("flex items-center p-6 pt-0", className)} {...props} />
-)
-
-export { Card, CardHeader, CardTitle, CardContent, CardFooter }
+export default Card

@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { Mail, Lock, Loader2 } from 'lucide-react'
+import { Mail, Lock, Loader2, Coffee } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import Button from '../components/ui/Button'
 import Input from '../components/ui/Input'
-import GlassCard from '../components/ui/GlassCard'
+import Card from '../components/ui/Card'
 
 const Login = () => {
     const [loading, setLoading] = useState(false)
@@ -33,11 +33,21 @@ const Login = () => {
     }
 
     return (
-        <div className="flex items-center justify-center min-h-[80vh] px-4 animate-fade-in">
-            <GlassCard className="w-full max-w-md p-8 border-white/10">
-                <div className="text-center mb-8">
-                    <h1 className="text-3xl font-bold mb-2">Welcome Back</h1>
-                    <p className="text-text-muted">Sign in to access your rewards</p>
+        <div className="flex flex-col items-center justify-center min-h-[80vh] px-4 animate-fade-in relative z-10">
+            <Card className="w-full max-w-sm p-8 border-none shadow-xl">
+                <div className="flex flex-col items-center text-center mb-8">
+                    <div className="w-16 h-16 bg-bg rounded-2xl flex items-center justify-center mb-4 text-primary">
+                        <Coffee className="w-8 h-8" strokeWidth={2.5} />
+                    </div>
+                    <h1 className="text-2xl font-bold mb-1 text-text">The Coffee Realm</h1>
+                    <p className="text-sm text-text-muted">Loyalty Rewards</p>
+                </div>
+
+                {/* Demo Credentials Box */}
+                <div className="bg-primary/5 rounded-xl p-4 mb-6 border border-primary/10 text-center">
+                    <p className="text-xs font-bold text-primary mb-1">Sample Account:</p>
+                    <p className="text-xs text-text-muted">Email: sample@coffeelover.com</p>
+                    <p className="text-xs text-text-muted">Password: coffee123</p>
                 </div>
 
                 {error && (
@@ -47,49 +57,37 @@ const Login = () => {
                 )}
 
                 <form onSubmit={handleSubmit} className="space-y-4">
-                    <div className="space-y-2">
-                        <div className="relative">
-                            <Mail className="absolute left-3 top-3.5 w-5 h-5 text-text-muted" />
-                            <Input
-                                name="email"
-                                type="email"
-                                placeholder="Email Address"
-                                className="pl-10"
-                                required
-                            />
-                        </div>
+                    <div className="space-y-1">
+                        <label className="text-xs font-bold text-text-muted ml-1">Email</label>
+                        <Input
+                            name="email"
+                            type="email"
+                            className="bg-white border-border focus:border-primary focus:ring-primary/20 text-text"
+                            required
+                        />
                     </div>
 
-                    <div className="space-y-2">
-                        <div className="relative">
-                            <Lock className="absolute left-3 top-3.5 w-5 h-5 text-text-muted" />
-                            <Input
-                                name="password"
-                                type="password"
-                                placeholder="Password"
-                                className="pl-10"
-                                required
-                            />
-                        </div>
-                        <div className="text-right">
-                            <span className="text-xs text-primary hover:underline cursor-pointer">
-                                Forgot Password?
-                            </span>
-                        </div>
+                    <div className="space-y-1">
+                        <label className="text-xs font-bold text-text-muted ml-1">Password</label>
+                        <Input
+                            name="password"
+                            type="password"
+                            className="bg-white border-border focus:border-primary focus:ring-primary/20 text-text"
+                            required
+                        />
                     </div>
 
-                    <Button type="submit" className="w-full mt-2" disabled={loading}>
-                        {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Sign In'}
+                    <Button type="submit" className="w-full h-12 mt-4" disabled={loading}>
+                        {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Login'}
                     </Button>
                 </form>
 
-                <p className="text-center mt-6 text-sm text-text-muted">
-                    Don't have an account?{' '}
-                    <Link to="/signup" className="text-primary hover:underline font-semibold">
-                        Join Now
+                <div className="mt-6 text-center">
+                    <Link to="/signup" className="text-primary hover:text-primary-hover font-bold text-sm">
+                        Create Account
                     </Link>
-                </p>
-            </GlassCard>
+                </div>
+            </Card>
         </div>
     )
 }

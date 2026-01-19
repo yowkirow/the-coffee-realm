@@ -2,51 +2,45 @@ import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Coffee, ChevronRight, User } from 'lucide-react'
 import Button from '../components/ui/Button'
-import GlassCard from '../components/ui/GlassCard'
+
 
 const Landing = () => {
     const navigate = useNavigate()
 
     return (
-        <div className="flex flex-col items-center justify-center min-h-[80vh] px-4 py-12 text-center animate-fade-in">
-            <div className="mb-6 relative">
-                <div className="absolute inset-0 bg-primary/20 blur-xl rounded-full animate-pulse" />
-                <Coffee className="w-20 h-20 text-primary relative z-10" strokeWidth={1.5} />
+        <div className="flex flex-col items-center justify-center min-h-[80vh] px-4 py-12 text-center animate-fade-in relative z-10">
+            <div className="mb-8 relative">
+                <div className="absolute inset-0 bg-primary/20 blur-2xl rounded-full" />
+                <div className="w-24 h-24 bg-white rounded-3xl shadow-xl flex items-center justify-center relative z-10 rotate-3 transition-transform hover:rotate-0 duration-300">
+                    <Coffee className="w-12 h-12 text-primary" strokeWidth={2} />
+                </div>
             </div>
 
-            <h1 className="text-5xl md:text-6xl font-bold mb-4 tracking-tight drop-shadow-sm">
-                The <span className="text-primary italic">Coffee</span> Realm
+            <h1 className="text-4xl md:text-5xl font-bold mb-4 tracking-tight text-text">
+                The Coffee Realm
             </h1>
+            <p className="text-lg text-primary font-medium mb-2">Loyalty Rewards</p>
 
-            <p className="text-xl text-text-muted mb-10 max-w-md mx-auto leading-relaxed">
-                Experience coffee like never before. Join our loyalty program and unlock exclusive rewards.
+            <p className="text-text-muted mb-10 max-w-xs mx-auto leading-relaxed">
+                Collect stamps, earn rewards, and enjoy exclusive perks.
             </p>
 
-            <div className="flex flex-col items-center gap-4 w-full max-w-sm">
+            <div className="flex flex-col gap-4 w-full max-w-xs">
                 <Button
                     className="w-full text-lg h-14"
-                    onClick={() => navigate('/dashboard')}
+                    onClick={() => navigate('/login')}
                 >
                     <User className="w-5 h-5 mr-2" />
                     Sign In
                 </Button>
 
-                <p className="text-sm text-text-muted mt-4">
-                    Don't have an account? <span className="text-primary hover:underline cursor-pointer">Join now</span>
-                </p>
-            </div>
-
-            <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-4xl px-4">
-                {[
-                    { title: "Earn Points", desc: "Get rewarded for every sip." },
-                    { title: "Exclusive Perks", desc: "Access members-only menu items." },
-                    { title: "Skip the Line", desc: "Order ahead and save time." }
-                ].map((item, i) => (
-                    <GlassCard key={i} className="flex flex-col items-center p-6 bg-surface/40 hover:bg-surface/60">
-                        <h3 className="text-lg font-bold text-primary mb-2">{item.title}</h3>
-                        <p className="text-sm text-text-muted">{item.desc}</p>
-                    </GlassCard>
-                ))}
+                <Button
+                    variant="outline"
+                    className="w-full text-lg h-14"
+                    onClick={() => navigate('/signup')}
+                >
+                    Create Account
+                </Button>
             </div>
         </div>
     )

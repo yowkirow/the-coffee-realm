@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { User, Mail, Lock, Loader2 } from 'lucide-react'
+import { User, Mail, Lock, Loader2, Coffee } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import Button from '../components/ui/Button'
 import Input from '../components/ui/Input'
-import GlassCard from '../components/ui/GlassCard'
+import Card from '../components/ui/Card'
 
 const SignUp = () => {
     const [loading, setLoading] = useState(false)
@@ -49,11 +49,14 @@ const SignUp = () => {
     }
 
     return (
-        <div className="flex items-center justify-center min-h-[80vh] px-4 animate-fade-in">
-            <GlassCard className="w-full max-w-md p-8 border-white/10">
-                <div className="text-center mb-8">
-                    <h1 className="text-3xl font-bold mb-2">Create Account</h1>
-                    <p className="text-text-muted">Join The Coffee Realm rewards program</p>
+        <div className="flex flex-col items-center justify-center min-h-[80vh] px-4 animate-fade-in relative z-10">
+            <Card className="w-full max-w-sm p-8 border-none shadow-xl">
+                <div className="flex flex-col items-center text-center mb-6">
+                    <div className="w-12 h-12 bg-bg rounded-xl flex items-center justify-center mb-3 text-primary">
+                        <Coffee className="w-6 h-6" strokeWidth={2.5} />
+                    </div>
+                    <h1 className="text-xl font-bold mb-1 text-text">Create Account</h1>
+                    <p className="text-xs text-text-muted">Start earning rewards today</p>
                 </div>
 
                 {error && (
@@ -62,57 +65,53 @@ const SignUp = () => {
                     </div>
                 )}
 
-                <form onSubmit={handleSubmit} className="space-y-4">
-                    <div className="space-y-2">
-                        <div className="relative">
-                            <User className="absolute left-3 top-3.5 w-5 h-5 text-text-muted" />
-                            <Input
-                                name="fullName"
-                                placeholder="Full Name"
-                                className="pl-10"
-                                required
-                            />
-                        </div>
+                <form onSubmit={handleSubmit} className="space-y-3">
+                    <div className="space-y-1">
+                        <label className="text-xs font-bold text-text-muted ml-1">Full Name</label>
+                        <Input
+                            name="fullName"
+                            placeholder="John Doe"
+                            className="bg-white border-border focus:border-primary focus:ring-primary/20 text-text"
+                            required
+                        />
                     </div>
 
-                    <div className="space-y-2">
-                        <div className="relative">
-                            <Mail className="absolute left-3 top-3.5 w-5 h-5 text-text-muted" />
-                            <Input
-                                name="email"
-                                type="email"
-                                placeholder="Email Address"
-                                className="pl-10"
-                                required
-                            />
-                        </div>
+                    <div className="space-y-1">
+                        <label className="text-xs font-bold text-text-muted ml-1">Email</label>
+                        <Input
+                            name="email"
+                            type="email"
+                            placeholder="john@example.com"
+                            className="bg-white border-border focus:border-primary focus:ring-primary/20 text-text"
+                            required
+                        />
                     </div>
 
-                    <div className="space-y-2">
-                        <div className="relative">
-                            <Lock className="absolute left-3 top-3.5 w-5 h-5 text-text-muted" />
-                            <Input
-                                name="password"
-                                type="password"
-                                placeholder="Password"
-                                className="pl-10"
-                                required
-                            />
-                        </div>
+                    <div className="space-y-1">
+                        <label className="text-xs font-bold text-text-muted ml-1">Password</label>
+                        <Input
+                            name="password"
+                            type="password"
+                            placeholder="******"
+                            className="bg-white border-border focus:border-primary focus:ring-primary/20 text-text"
+                            required
+                        />
                     </div>
 
-                    <Button type="submit" className="w-full mt-2" disabled={loading}>
+                    <Button type="submit" className="w-full h-12 mt-4" disabled={loading}>
                         {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Sign Up'}
                     </Button>
                 </form>
 
-                <p className="text-center mt-6 text-sm text-text-muted">
-                    Already have an account?{' '}
-                    <Link to="/login" className="text-primary hover:underline font-semibold">
-                        Sign In
-                    </Link>
-                </p>
-            </GlassCard>
+                <div className="mt-6 text-center">
+                    <p className="text-xs text-text-muted">
+                        Already have an account?{' '}
+                        <Link to="/login" className="text-primary hover:text-primary-hover font-bold">
+                            Log In
+                        </Link>
+                    </p>
+                </div>
+            </Card>
         </div>
     )
 }
