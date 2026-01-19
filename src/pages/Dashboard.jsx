@@ -37,8 +37,7 @@ const Dashboard = () => {
                 </Card>
             </div>
 
-            import {QRCodeSVG} from 'qrcode.react'
-            // ...
+
             <Card className="flex flex-col items-center justify-center text-center p-8 border-2 border-dashed border-primary/20 bg-white">
                 <div className="w-48 h-48 mb-4">
                     {profile?.id ? (
