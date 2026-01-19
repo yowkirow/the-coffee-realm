@@ -10,7 +10,15 @@ import { useAuth } from '../context/AuthContext'
 
 const Dashboard = () => {
     const navigate = useNavigate()
-    const { profile, signOut } = useAuth()
+    const { user, profile, signOut, loading, fetchProfile } = useAuth()
+
+    // Retry fetching profile if missing (Recovery Logic)
+    useEffect(() => {
+        if (user && !profile && !loading) {
+            console.log('User loaded but profile missing. Attempting refetch...')
+            fetchProfile(user.id)
+        }
+    }, [user, profile, loading, fetchProfile])
 
     const handleSignOut = async () => {
         await signOut()

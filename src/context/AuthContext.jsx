@@ -68,6 +68,7 @@ export const AuthProvider = ({ children }) => {
 
   const fetchProfile = async (userId) => {
     try {
+      // setLoading(true) // Don't block UI on retry, just fetch in background
       const { data, error } = await supabase
         .from('profiles')
         .select('*')
@@ -90,6 +91,7 @@ export const AuthProvider = ({ children }) => {
     signUp: (data) => supabase.auth.signUp(data),
     signIn: (data) => supabase.auth.signInWithPassword(data),
     signOut: () => supabase.auth.signOut(),
+    fetchProfile, // Export this
     user,
     profile,
     loading
