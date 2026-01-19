@@ -50,9 +50,9 @@ const SignUp = () => {
 
     return (
         <div className="flex flex-col items-center justify-center min-h-[80vh] px-4 animate-fade-in relative z-10">
-            <Card className="w-full max-w-sm p-8 border-none shadow-xl">
+            <Card className="w-full max-w-sm p-8 border border-white/40 shadow-2xl bg-white/70 backdrop-blur-md">
                 <div className="flex flex-col items-center text-center mb-6">
-                    <div className="w-12 h-12 bg-bg rounded-xl flex items-center justify-center mb-3 text-primary">
+                    <div className="w-12 h-12 bg-white/50 rounded-xl flex items-center justify-center mb-3 text-primary shadow-sm">
                         <Coffee className="w-6 h-6" strokeWidth={2.5} />
                     </div>
                     <h1 className="text-xl font-bold mb-1 text-text">Create Account</h1>
