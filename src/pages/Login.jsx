@@ -22,13 +22,24 @@ const Login = () => {
         const password = formData.get('password')
 
         try {
-            const { error } = await signIn({ email, password })
+            console.log('Attempting login with:', email)
+            const { data, error } = await signIn({ email, password })
+            console.log('Login result:', { data, error })
+
             if (error) throw error
+
+            console.log('Login success, navigating...')
+            setLoading(false) // Stop loading before nav
             navigate('/dashboard')
         } catch (error) {
+            console.error('Login error:', error)
             setError(error.message)
-        } finally {
             setLoading(false)
+        } finally {
+            // Safety: ensure loading stops if not already stopped (e.g. if navigate didn't happen)
+            if (!window.location.pathname.includes('dashboard')) {
+                setLoading(false)
+            }
         }
     }
 
