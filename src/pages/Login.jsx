@@ -44,10 +44,25 @@ const Login = () => {
                 </div>
 
                 {/* Demo Credentials Box */}
-                <div className="bg-primary/5 rounded-xl p-4 mb-6 border border-primary/10 text-center">
-                    <p className="text-xs font-bold text-primary mb-1">Sample Account:</p>
-                    <p className="text-xs text-text-muted">Email: sample@coffeelover.com</p>
-                    <p className="text-xs text-text-muted">Password: coffee123</p>
+                <div className="bg-emerald-50 rounded-xl p-4 mb-6 border border-emerald-100 text-center">
+                    <p className="text-xs font-bold text-emerald-800 mb-2 uppercase tracking-wide">Demo Accounts</p>
+                    <div className="grid grid-cols-3 gap-2 text-[10px] text-left">
+                        <div className="bg-white p-2 rounded border border-emerald-100">
+                            <span className="font-bold block text-emerald-700">Admin</span>
+                            <span className="text-gray-500 block">admin@demo.com</span>
+                            <span className="text-gray-400">pass123</span>
+                        </div>
+                        <div className="bg-white p-2 rounded border border-emerald-100">
+                            <span className="font-bold block text-emerald-700">Barista</span>
+                            <span className="text-gray-500 block">barista@demo.com</span>
+                            <span className="text-gray-400">pass123</span>
+                        </div>
+                        <div className="bg-white p-2 rounded border border-emerald-100">
+                            <span className="font-bold block text-emerald-700">User</span>
+                            <span className="text-gray-500 block">user@demo.com</span>
+                            <span className="text-gray-400">pass123</span>
+                        </div>
+                    </div>
                 </div>
 
                 {error && (
