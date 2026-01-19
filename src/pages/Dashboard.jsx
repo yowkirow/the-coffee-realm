@@ -1,5 +1,6 @@
 import React from 'react'
 import { LogOut, QrCode } from 'lucide-react'
+import { QRCodeSVG } from 'qrcode.react'
 import Button from '../components/ui/Button'
 import Card from '../components/ui/Card'
 import StampCard from '../components/ui/StampCard'
