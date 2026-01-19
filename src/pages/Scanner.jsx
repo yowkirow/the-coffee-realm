@@ -20,14 +20,8 @@ const Scanner = () => {
         isProcessing.current = true
         setStatus('processing')
 
-        // Pause scanning
-        if (scannerRef.current) {
-            try {
-                await scannerRef.current.pause(true)
-            } catch (e) {
-                console.warn("Failed to pause scanner", e)
-            }
-        }
+        // NO PAUSE - just ignore frames while processing
+        // This keeps the camera feed live and responsive
 
         try {
             const userId = decodedText
@@ -42,31 +36,20 @@ const Scanner = () => {
             setScanResult(`Added stamp to user!`)
             setStatus('success')
 
-            setTimeout(async () => {
+            setTimeout(() => {
                 setStatus('scanning')
                 setScanResult(null)
                 isProcessing.current = false
-                if (scannerRef.current) {
-                    try {
-                        await scannerRef.current.resume()
-                    } catch (e) {
-                        console.warn("Resume failed", e)
-                    }
-                }
             }, 3000)
 
         } catch (error) {
             console.error("Scan Logic Error:", error)
-            setScanResult("Failed to add points.")
+            setScanResult(`Error: ${error.message || "Failed to add points"}`)
             setStatus('error')
-            setTimeout(async () => {
+
+            setTimeout(() => {
                 setStatus('scanning')
                 isProcessing.current = false
-                if (scannerRef.current) {
-                    try {
-                        await scannerRef.current.resume()
-                    } catch (e) { }
-                }
             }, 3000)
         }
     }
@@ -89,7 +72,7 @@ const Scanner = () => {
                 const config = {
                     fps: 10,
                     aspectRatio: 1.0,
-                    qrbox: { width: 250, height: 250 } // Restore box for focus
+                    qrbox: { width: 250, height: 250 }
                 }
 
                 // Start immediately

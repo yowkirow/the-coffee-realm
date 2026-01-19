@@ -5,6 +5,7 @@ import Button from '../components/ui/Button'
 import Card from '../components/ui/Card'
 import StampCard from '../components/ui/StampCard'
 import FancyQRCode from '../components/ui/FancyQRCode'
+import TransactionHistory from '../components/ui/TransactionHistory'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 
@@ -101,6 +102,11 @@ const Dashboard = () => {
                         </Button>
                     )}
                 </div>
+            </div>
+
+            {/* Transaction History */}
+            <div className="mt-8">
+                {profile?.id && <TransactionHistory userId={profile.id} />}
             </div>
 
             {/* Debug Info - Remove later */}
