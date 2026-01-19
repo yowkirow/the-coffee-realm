@@ -21,8 +21,16 @@ const Dashboard = () => {
     }, [user, profile, loading, fetchProfile])
 
     const handleSignOut = async () => {
-        await signOut()
-        navigate('/')
+        try {
+            await signOut()
+        } catch (error) {
+            console.error("Logout failed:", error)
+            // Force manual cleanup if API fails
+            localStorage.clear()
+        } finally {
+            navigate('/')
+            window.location.reload() // Hard refresh to ensure clean state
+        }
     }
 
     // Mocking stamps from points (e.g., 50 points = 1 stamp)
