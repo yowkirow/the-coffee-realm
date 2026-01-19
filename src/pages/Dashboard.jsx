@@ -62,14 +62,23 @@ const Dashboard = () => {
                 </Button>
 
                 {profile?.role === 'admin' && (
-                    <Button
-                        className="w-full h-12 text-base border-2 border-emerald-700 text-emerald-800 hover:bg-emerald-50"
-                        variant="outline"
-                        onClick={() => navigate('/admin')}
-                    >
-                        <Settings className="w-5 h-5 mr-2" />
-                        Admin Settings
-                    </Button>
+                    <div className="flex gap-2">
+                        <Button
+                            className="flex-1 h-12 text-base border-2 border-emerald-700 text-emerald-800 hover:bg-emerald-50"
+                            variant="outline"
+                            onClick={() => navigate('/admin')}
+                        >
+                            <Settings className="w-5 h-5 mr-2" />
+                            Settings
+                        </Button>
+                        <Button
+                            className="flex-1 h-12 text-base bg-emerald-800 text-white hover:bg-emerald-900"
+                            onClick={() => navigate('/scanner')}
+                        >
+                            <QrCode className="w-5 h-5 mr-2" />
+                            Scan
+                        </Button>
+                    </div>
                 )}
             </div>
 
