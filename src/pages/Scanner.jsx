@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react' // Added useRef
 import { Html5QrcodeScanner } from 'html5-qrcode'
 import { supabase } from '../lib/supabaseClient'
 import { useNavigate } from 'react-router-dom'
@@ -10,34 +10,22 @@ const Scanner = () => {
     const [scanResult, setScanResult] = useState(null)
     const [status, setStatus] = useState('idle') // idle, scanning, processing, success, error
     const navigate = useNavigate()
+    const scannerRef = useRef(null)
 
-    useEffect(() => {
-        const scanner = new Html5QrcodeScanner(
-            "reader",
-            { fps: 10, qrbox: { width: 250, height: 250 } },
-            /* verbose= */ false
-        )
+    // Moved onScanSuccess UP so it's accessible (or use var/function hoisting)
+    // Actually, in useEffect we can just call it if it's defined in component scope.
 
-        scanner.render(onScanSuccess, onScanFailure)
-
-        return () => {
-            scanner.clear().catch(error => {
-                console.error("Failed to clear html5QrcodeScanner. ", error)
-            })
-        }
-    }, [])
-
+    // Define the success handler FIRST or ensure it's stable
     const onScanSuccess = async (decodedText, decodedResult) => {
         if (status === 'processing' || status === 'success') return
 
         setStatus('processing')
         try {
-            // decodedText should be the User UUID
             const userId = decodedText
-
+            // ... logic ...
             const { data, error } = await supabase.rpc('increment_points', {
                 target_user_id: userId,
-                points_to_add: 50 // Default 50 points (1 stamp)
+                points_to_add: 50
             })
 
             if (error) throw error
@@ -45,7 +33,6 @@ const Scanner = () => {
             setScanResult(`Added stamp to user!`)
             setStatus('success')
 
-            // Refocus for next scan after 3 seconds
             setTimeout(() => {
                 setStatus('idle')
                 setScanResult(null)
@@ -53,11 +40,48 @@ const Scanner = () => {
 
         } catch (error) {
             console.error(error)
-            setScanResult("Failed to add points. Invalid QR?")
+            setScanResult("Failed to add points.")
             setStatus('error')
             setTimeout(() => setStatus('idle'), 3000)
         }
     }
+
+    useEffect(() => {
+        // Safe check for element
+        if (!document.getElementById('reader')) {
+            console.warn("Scanner element 'reader' not found")
+            return
+        }
+
+        const config = {
+            fps: 10,
+            qrbox: { width: 250, height: 250 },
+            aspectRatio: 1
+        }
+
+        // Initialize
+        try {
+            scannerRef.current = new Html5QrcodeScanner("reader", config, false)
+
+            scannerRef.current.render(onScanSuccess, (err) => {
+                // Ignore errors to prevent console spam
+            })
+        } catch (e) {
+            console.error("Scanner Initialization Failed:", e)
+            setScanResult('Camera failed to start.')
+            setStatus('error')
+        }
+
+        return () => {
+            if (scannerRef.current) {
+                try {
+                    scannerRef.current.clear()
+                } catch (e) {
+                    console.error("Failed to clear scanner", e)
+                }
+            }
+        }
+    }, []) // Dependency array empty is fine if logic is stable
 
     const onScanFailure = (error) => {
         // Handle scan failure, usually better to ignore frame errors
