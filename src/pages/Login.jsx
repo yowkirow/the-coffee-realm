@@ -44,23 +44,23 @@ const Login = () => {
                 </div>
 
                 {/* Demo Credentials Box */}
-                <div className="bg-emerald-50 rounded-xl p-4 mb-6 border border-emerald-100 text-center">
-                    <p className="text-xs font-bold text-emerald-800 mb-2 uppercase tracking-wide">Demo Accounts</p>
-                    <div className="grid grid-cols-3 gap-2 text-[10px] text-left">
-                        <div className="bg-white p-2 rounded border border-emerald-100">
-                            <span className="font-bold block text-emerald-700">Admin</span>
-                            <span className="text-gray-500 block">admin@demo.com</span>
-                            <span className="text-gray-400">pass123</span>
+                <div className="bg-emerald-50 rounded-xl p-4 mb-6 border border-emerald-100/50 text-center">
+                    <p className="text-xs font-bold text-emerald-800 mb-2 uppercase tracking-wide">Recommend Demo Accounts</p>
+                    <div className="space-y-2 text-left">
+                        <div className="flex bg-white/60 p-2 rounded border border-emerald-100/50 items-center justify-between">
+                            <span className="font-bold text-emerald-800 text-xs w-16">Admin</span>
+                            <code className="text-[10px] text-emerald-600 bg-emerald-100/50 px-1 py-0.5 rounded">admin@demo.com</code>
+                            <span className="text-[10px] text-gray-400">pass123</span>
                         </div>
-                        <div className="bg-white p-2 rounded border border-emerald-100">
-                            <span className="font-bold block text-emerald-700">Barista</span>
-                            <span className="text-gray-500 block">barista@demo.com</span>
-                            <span className="text-gray-400">pass123</span>
+                        <div className="flex bg-white/60 p-2 rounded border border-emerald-100/50 items-center justify-between">
+                            <span className="font-bold text-emerald-800 text-xs w-16">Barista</span>
+                            <code className="text-[10px] text-emerald-600 bg-emerald-100/50 px-1 py-0.5 rounded">barista@demo.com</code>
+                            <span className="text-[10px] text-gray-400">pass123</span>
                         </div>
-                        <div className="bg-white p-2 rounded border border-emerald-100">
-                            <span className="font-bold block text-emerald-700">User</span>
-                            <span className="text-gray-500 block">user@demo.com</span>
-                            <span className="text-gray-400">pass123</span>
+                        <div className="flex bg-white/60 p-2 rounded border border-emerald-100/50 items-center justify-between">
+                            <span className="font-bold text-emerald-800 text-xs w-16">User</span>
+                            <code className="text-[10px] text-emerald-600 bg-emerald-100/50 px-1 py-0.5 rounded">user@demo.com</code>
+                            <span className="text-[10px] text-gray-400">pass123</span>
                         </div>
                     </div>
                 </div>
