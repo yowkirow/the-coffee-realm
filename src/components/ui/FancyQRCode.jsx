@@ -6,18 +6,19 @@ const FancyQRCode = ({ value, size = 200 }) => {
     const qrCode = useRef(null)
 
     useEffect(() => {
+        // Initialize logic
         qrCode.current = new QRCodeStyling({
             width: size,
             height: size,
-            type: 'svg',
+            type: 'svg', // Keeping SVG for crispness, but handled better
             data: value,
-            image: '/react.svg', // using React logo as placeholder for coffee cup
+            // image: '/vite.svg', // Temporarily removing image to isolate the issue
             dotsOptions: {
-                color: '#047857', // emerald-700
+                color: '#047857',
                 type: 'rounded'
             },
             cornersSquareOptions: {
-                color: '#064e3b', // emerald-900
+                color: '#064e3b',
                 type: 'extra-rounded'
             },
             cornersDotOptions: {
@@ -25,18 +26,16 @@ const FancyQRCode = ({ value, size = 200 }) => {
                 type: 'dot'
             },
             backgroundOptions: {
-                color: '#ffffff',
-            },
-            imageOptions: {
-                crossOrigin: 'anonymous',
-                margin: 5
+                color: 'transparent', // Transparent to blend with container
             }
         })
 
+        // Append to DOM
         if (ref.current) {
+            ref.current.innerHTML = '' // Clear previous renders (Strict Mode fix)
             qrCode.current.append(ref.current)
         }
-    }, [])
+    }, [size]) // Re-run if size changes only
 
     useEffect(() => {
         if (qrCode.current) {
@@ -47,7 +46,7 @@ const FancyQRCode = ({ value, size = 200 }) => {
     }, [value])
 
     return (
-        <div ref={ref} className="flex justify-center items-center" />
+        <div ref={ref} className="flex justify-center items-center w-full h-full" />
     )
 }
 
