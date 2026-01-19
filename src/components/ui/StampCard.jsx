@@ -1,8 +1,23 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Coffee, Gift } from 'lucide-react'
 import { cn } from '../../lib/utils'
+import { supabase } from '../../lib/supabaseClient'
 
-const StampCard = ({ stamps = 0, maxStamps = 8 }) => {
+const StampCard = ({ stamps = 0 }) => {
+    const [maxStamps, setMaxStamps] = useState(8)
+    const [rewardName, setRewardName] = useState('Free Coffee')
+
+    useEffect(() => {
+        const fetchSettings = async () => {
+            const { data } = await supabase.from('loyalty_settings').select('*').single()
+            if (data) {
+                setMaxStamps(data.stamps_required)
+                setRewardName(data.reward_name)
+            }
+        }
+        fetchSettings()
+    }, [])
+
     return (
         <div className="bg-emerald-50 rounded-2xl p-6 border border-emerald-100">
             <div className="flex justify-between items-center mb-4">
@@ -14,7 +29,7 @@ const StampCard = ({ stamps = 0, maxStamps = 8 }) => {
                 <span className="text-emerald-700 font-bold text-lg mr-1">{stamps}</span>
                 <span className="text-gray-400">/ {maxStamps} stamps</span>
                 <span className="float-right text-emerald-600 text-xs font-normal bg-emerald-100 px-2 py-1 rounded-full">
-                    {maxStamps - stamps} more to reward
+                    {Math.max(0, maxStamps - stamps)} more to {rewardName}
                 </span>
             </p>
 
@@ -22,7 +37,7 @@ const StampCard = ({ stamps = 0, maxStamps = 8 }) => {
             <div className="w-full bg-white h-3 rounded-full mb-6 overflow-hidden shadow-inner ring-1 ring-emerald-100">
                 <div
                     className="bg-emerald-500 h-full transition-all duration-1000 ease-out"
-                    style={{ width: `${(stamps / maxStamps) * 100}%` }}
+                    style={{ width: `${Math.min(100, (stamps / maxStamps) * 100)}%` }}
                 />
             </div>
 

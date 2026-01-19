@@ -8,6 +8,7 @@ import SignUp from './pages/SignUp'
 import Dashboard from './pages/Dashboard'
 import Menu from './pages/Menu'
 import Scanner from './pages/Scanner'
+import AdminSettings from './pages/AdminSettings'
 
 
 
@@ -42,6 +43,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <Scanner />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin"
+            element={
+              <ProtectedRoute>
+                <AdminSettings />
               </ProtectedRoute>
             }
           />
