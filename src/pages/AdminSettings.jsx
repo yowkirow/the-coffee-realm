@@ -11,6 +11,7 @@ import UserManagement from '../components/admin/UserManagement'
 const AdminSettings = () => {
     const { profile } = useAuth()
     const navigate = useNavigate()
+    const [activeTab, setActiveTab] = useState('config') // 'config' or 'users'
     const [loading, setLoading] = useState(true)
     const [saving, setSaving] = useState(false)
     const [settings, setSettings] = useState({
@@ -121,8 +122,8 @@ const AdminSettings = () => {
                 <button
                     onClick={() => setActiveTab('config')}
                     className={`flex-1 py-2 text-sm font-bold rounded-lg transition-all ${activeTab === 'config'
-                        ? 'bg-white text-emerald-800 shadow-sm'
-                        : 'text-gray-500 hover:text-gray-700'
+                            ? 'bg-white text-emerald-800 shadow-sm'
+                            : 'text-gray-500 hover:text-gray-700'
                         }`}
                 >
                     Loyalty Config
@@ -130,8 +131,8 @@ const AdminSettings = () => {
                 <button
                     onClick={() => setActiveTab('users')}
                     className={`flex-1 py-2 text-sm font-bold rounded-lg transition-all ${activeTab === 'users'
-                        ? 'bg-white text-emerald-800 shadow-sm'
-                        : 'text-gray-500 hover:text-gray-700'
+                            ? 'bg-white text-emerald-800 shadow-sm'
+                            : 'text-gray-500 hover:text-gray-700'
                         }`}
                 >
                     User Management
@@ -142,8 +143,6 @@ const AdminSettings = () => {
                 <UserManagement />
             ) : (
                 <>
-                    {/* Existing Config UI wrapped in Fragment */}
-
                     <Card className="bg-white border-emerald-100 shadow-lg">
                         <form onSubmit={handleSave} className="space-y-6">
                             <div>
