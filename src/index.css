@@ -1,0 +1,68 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Playfair+Display:wght@500;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 140 30% 96%;
+    /* sage-background equivalent */
+    --foreground: 110 30% 10%;
+    --primary: 110 30% 24%;
+    /* #31512A */
+    --primary-foreground: 0 0% 100%;
+    --sage-light: #f1f7f4;
+    --forest-green: #31512A;
+  }
+
+  body {
+    @apply bg-[#f1f7f4] text-zinc-900 font-sans selection:bg-primary/30 selection:text-white;
+    font-family: "Plus Jakarta Sans", sans-serif;
+    overflow-x: hidden;
+  }
+}
+
+@keyframes scan-line {
+  0% {
+    top: 0;
+  }
+
+  100% {
+    top: 100%;
+  }
+}
+
+.animate-scan-line {
+  animation: scan-line 2s linear infinite;
+}
+
+@layer utilities {
+  .glass {
+    @apply bg-white/70 backdrop-blur-xl border border-white/40 shadow-card;
+  }
+
+  .text-glow {
+    text-shadow: 0 2px 10px rgba(57, 255, 20, 0.3);
+  }
+
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .coffee-stamp-icon {
+    mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M78.5,39.5c0-2.8-2.2-5-5-5H16.5c-2.8,0-5,2.2-5,5v7.2c0,16.2,12.2,29.7,28.1,31.6c4.6,7.5,12.8,12.5,22.2,12.5s17.6-5.1,22.2-12.5C84.3,71.5,83.5,63.1,78.5,56.1V39.5z M73.5,49.5c0,11.2-8.5,20.5-19.4,21.9c-2.8,0.3-5.6,0.5-8.6,0.5c-3,0-5.8-0.2-8.6-0.5c-10.9-1.4-19.4-10.7-19.4-21.9V39.5h56V49.5z M83.5,41.5h5v10c0,2.8-2.2,5-5,5h-5V41.5z" fill="black"/></svg>');
+    mask-repeat: no-repeat;
+    mask-position: center;
+    mask-size: contain;
+    background-color: currentColor;
+    width: 28px;
+    height: 28px;
+  }
+}
