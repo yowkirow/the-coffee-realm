@@ -20,7 +20,7 @@ export function GlassCard({ className, children, gradient, ...props }: GlassCard
             )}
             {...props}
         >
-            <div className="relative z-10">{children}</div>
+            <div className="relative z-10">{children as any}</div>
         </motion.div>
     );
 }
